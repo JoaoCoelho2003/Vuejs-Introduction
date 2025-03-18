@@ -1,25 +1,12 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
+  <div class="bg-white rounded shadow p-6">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-bold text-gray-800">My Tasks</h2>
       <TaskFilter v-model="activeFilter" :counts="filterCounts" />
     </div>
 
     <div v-if="filteredTasks.length === 0" class="py-8 text-center text-gray-500">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-12 w-12 mx-auto mb-3 text-gray-300"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="9" y1="9" x2="15" y2="15"></line>
-        <line x1="15" y1="9" x2="9" y2="15"></line>
-      </svg>
+      <XSquare class="h-12 w-12 mx-auto mb-3 text-gray-300" />
       <p>No tasks to display</p>
       <p class="text-sm mt-1">
         {{
@@ -46,6 +33,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { XSquare } from 'lucide-vue-next'
 import TaskItem from './TaskItem.vue'
 import TaskFilter from './TaskFilter.vue'
 import TaskStats from './TaskStats.vue'
@@ -80,7 +68,6 @@ const filterCounts = computed(() => {
   }
 })
 
-// Methods
 const updateTask = (updatedTask) => {
   emit('update-task', updatedTask)
 }

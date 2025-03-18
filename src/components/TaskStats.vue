@@ -3,7 +3,7 @@
     <h3 class="text-sm font-medium text-gray-700 mb-3">Task Statistics</h3>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-gray-50 p-3 rounded-lg">
+      <div class="bg-gray-50 p-3 rounded">
         <div class="text-xs text-gray-500 mb-1">Completion Rate</div>
         <div class="flex items-center">
           <div class="text-lg font-semibold">{{ completionRate }}%</div>
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <div class="bg-gray-50 p-3 rounded-lg">
+      <div class="bg-gray-50 p-3 rounded">
         <div class="text-xs text-gray-500 mb-1">High Priority</div>
         <div class="flex items-center">
           <div class="text-lg font-semibold">{{ highPriorityCount }}</div>
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="bg-gray-50 p-3 rounded-lg">
+      <div class="bg-gray-50 p-3 rounded">
         <div class="text-xs text-gray-500 mb-1">Due Soon</div>
         <div class="flex items-center">
           <div class="text-lg font-semibold">{{ dueSoonCount }}</div>

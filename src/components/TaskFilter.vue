@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center">
-    <div class="inline-flex rounded-md shadow-sm" role="group">
+    <div class="inline-flex rounded shadow-sm" role="group">
       <button
         type="button"
         @click="updateFilter('all')"

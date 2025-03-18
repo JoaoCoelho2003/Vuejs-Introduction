@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+  <div class="bg-white rounded shadow p-6 mb-6">
     <h2 class="text-xl font-bold text-gray-800 mb-4">Add New Task</h2>
 
     <form @submit.prevent="addTask">
@@ -12,8 +12,8 @@
           v-model="newTaskTitle"
           type="text"
           placeholder="What needs to be done?"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-          :class="{ 'border-red-500 ring-1 ring-red-500': titleError }"
+          class="w-full p-2 border rounded focus:ring-2 focus:ring-emerald-500"
+          :class="{ 'border-red-500': titleError }"
         />
         <p v-if="titleError" class="mt-1 text-sm text-red-500">
           {{ titleError }}
@@ -29,18 +29,13 @@
           v-model="description"
           rows="3"
           placeholder="Add some details about this task..."
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+          class="w-full p-2 border rounded focus:ring-2 focus:ring-emerald-500"
         ></textarea>
       </div>
 
       <div class="flex flex-wrap gap-4 mb-4">
         <div class="flex items-center">
-          <input
-            id="taskPriority"
-            v-model="isHighPriority"
-            type="checkbox"
-            class="w-4 h-4 accent-emerald-600"
-          />
+          <input id="taskPriority" v-model="isHighPriority" type="checkbox" class="w-4 h-4" />
           <label for="taskPriority" class="ml-2 text-sm text-gray-700"> High priority </label>
         </div>
 
@@ -52,7 +47,7 @@
             id="dueDate"
             v-model="dueDate"
             type="date"
-            class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            class="p-1 border rounded focus:ring-2 focus:ring-emerald-500"
           />
         </div>
       </div>
@@ -60,21 +55,9 @@
       <div class="flex justify-end">
         <button
           type="submit"
-          class="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors flex items-center gap-2"
+          class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 flex items-center gap-2"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
+          <PlusIcon class="h-5 w-5" />
           Add Task
         </button>
       </div>
@@ -84,6 +67,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { PlusIcon } from 'lucide-vue-next'
 
 const emit = defineEmits(['add-task'])
 
