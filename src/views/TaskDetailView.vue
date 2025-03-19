@@ -1,134 +1,71 @@
 <template>
-  <div class="max-w-3xl mx-auto">
-    <div v-if="loading" class="text-center py-12">
-      <div
-        class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-emerald-500 border-t-transparent"
-      ></div>
-      <p class="mt-2 text-gray-600">Loading task...</p>
+  <div class="max-w-3xl mx-auto p-4">
+    <div v-if="loading" class="text-center p-4">
+      <p>Loading...</p>
     </div>
 
-    <div v-else-if="!task" class="bg-white rounded shadow p-6 text-center">
-      <AlertCircle class="h-16 w-16 mx-auto mb-4 text-gray-400" />
-      <h2 class="text-xl font-bold text-gray-800 mb-2">Task Not Found</h2>
-      <p class="text-gray-600 mb-4">
-        The task you're looking for doesn't exist or has been deleted.
-      </p>
-      <router-link
-        to="/"
-        class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
-      >
-        <ArrowLeft class="h-5 w-5 mr-2" />
+    <div v-else-if="!task" class="text-center p-4 border rounded">
+      <AlertCircle class="mx-auto mb-2" />
+      <h2 class="font-bold mb-2">Task Not Found</h2>
+      <p class="mb-4">This task doesn't exist or has been deleted.</p>
+      <router-link to="/" class="bg-green-500 text-white p-2 rounded inline-block">
+        <ArrowLeft class="inline mr-1" />
         Back to Tasks
       </router-link>
     </div>
 
     <div v-else>
-      <div class="flex items-center mb-4">
-        <router-link to="/" class="text-emerald-600 hover:text-emerald-700 flex items-center">
-          <ArrowLeft class="h-5 w-5 mr-1" />
+      <div class="mb-4">
+        <router-link to="/" class="text-green-500">
+          <ArrowLeft class="inline mr-1" />
           Back to Tasks
         </router-link>
       </div>
 
-      <div class="bg-white rounded shadow">
-        <div class="p-6">
-          <div class="flex items-start justify-between">
-            <div>
-              <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ task.title }}</h1>
-              <div class="flex flex-wrap gap-2 mb-4">
-                <span
-                  class="px-2 py-1 text-xs rounded-full"
-                  :class="
-                    task.completed ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                  "
-                >
-                  {{ task.completed ? 'Completed' : 'Active' }}
-                </span>
-                <span
-                  v-if="task.priority === 'high'"
-                  class="px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded-full"
-                >
-                  High Priority
-                </span>
-                <span
-                  v-if="task.dueDate"
-                  class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full"
-                >
-                  Due: {{ formatDate(task.dueDate) }}
-                </span>
-              </div>
-            </div>
+      <div class="bg-white p-4 border rounded">
+        <div class="flex justify-between">
+          <h1 class="font-bold text-xl mb-2">{{ task.title }}</h1>
+          <button @click="showDeleteModal = true" class="text-red-500">
+            <Trash2 />
+          </button>
+        </div>
 
-            <div class="flex gap-2">
-              <button
-                @click="confirmDelete"
-                class="p-2 rounded hover:bg-gray-100"
-                title="Delete task"
-              >
-                <Trash2 class="h-6 w-6 text-red-500" />
-              </button>
-            </div>
-          </div>
+        <div class="mb-4">
+          <span
+            class="mr-2 p-1 text-xs rounded"
+            :class="task.completed ? 'bg-green-100' : 'bg-blue-100'"
+          >
+            {{ task.completed ? 'Completed' : 'Active' }}
+          </span>
+          <span v-if="task.priority === 'high'" class="p-1 text-xs bg-yellow-100 rounded">
+            High Priority
+          </span>
+        </div>
 
-          <div class="mt-6">
-            <h2 class="text-lg font-semibold text-gray-800 mb-2">Description</h2>
-            <div class="bg-gray-50 p-4 rounded">
-              <p v-if="task.description" class="text-gray-700 whitespace-pre-line">
-                {{ task.description }}
-              </p>
-              <p v-else class="text-gray-500 italic">No description provided</p>
-            </div>
-          </div>
+        <div class="mb-4">
+          <h2 class="font-bold mb-1">Description</h2>
+          <p v-if="task.description" class="bg-gray-50 p-2">
+            {{ task.description }}
+          </p>
+          <p v-else class="italic">No description provided</p>
+        </div>
 
-          <div class="mt-6 grid grid-cols-1 gap-4">
-            <div>
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Details</h2>
-              <div class="bg-gray-50 p-4 rounded">
-                <div class="grid grid-cols-2 gap-2 text-sm">
-                  <div class="text-gray-500">Created:</div>
-                  <div>{{ formatDateTime(task.createdAt) }}</div>
-
-                  <div class="text-gray-500">Status:</div>
-                  <div>{{ task.completed ? 'Completed' : 'Active' }}</div>
-
-                  <div class="text-gray-500">Priority:</div>
-                  <div>{{ task.priority === 'high' ? 'High' : 'Normal' }}</div>
-
-                  <div class="text-gray-500">Due Date:</div>
-                  <div>{{ task.dueDate ? formatDate(task.dueDate) : 'Not set' }}</div>
-                </div>
-              </div>
-            </div>
+        <div>
+          <h2 class="font-bold mb-1">Details</h2>
+          <div class="bg-gray-50 p-2">
+            <p>Created: {{ new Date(task.createdAt).toLocaleString() }}</p>
+            <p>Status: {{ task.completed ? 'Completed' : 'Active' }}</p>
+            <p>Priority: {{ task.priority === 'high' ? 'High' : 'Normal' }}</p>
           </div>
         </div>
       </div>
     </div>
 
-    <div
+    <DeleteConfirmModal
       v-if="showDeleteModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-    >
-      <div class="bg-white rounded shadow w-full max-w-md p-6">
-        <h3 class="text-lg font-bold text-gray-800 mb-4">Confirm Delete</h3>
-        <p class="text-gray-600 mb-6">
-          Are you sure you want to delete this task? This action cannot be undone.
-        </p>
-        <div class="flex justify-end gap-3">
-          <button
-            @click="showDeleteModal = false"
-            class="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-          >
-            Cancel
-          </button>
-          <button
-            @click="deleteTask"
-            class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
+      @cancel="showDeleteModal = false"
+      @confirm="deleteTask"
+    />
   </div>
 </template>
 
@@ -136,10 +73,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Trash2, ArrowLeft, AlertCircle } from 'lucide-vue-next'
+import DeleteConfirmModal from '../components/DeleteConfirmModal.vue'
 
 const router = useRouter()
 const route = useRoute()
-
 const loading = ref(true)
 const showDeleteModal = ref(false)
 
@@ -153,10 +90,6 @@ const task = computed(() => {
   return getTasks().find((t) => t.id === taskId) || null
 })
 
-const confirmDelete = () => {
-  showDeleteModal.value = true
-}
-
 const deleteTask = () => {
   if (!task.value) return
 
@@ -165,30 +98,6 @@ const deleteTask = () => {
 
   showDeleteModal.value = false
   router.push('/')
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-
-  const date = new Date(dateString)
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(date)
-}
-
-const formatDateTime = (dateString) => {
-  if (!dateString) return ''
-
-  const date = new Date(dateString)
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  }).format(date)
 }
 
 onMounted(() => {

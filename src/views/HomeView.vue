@@ -1,14 +1,9 @@
 <template>
-  <div class="max-w-3xl mx-auto">
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome to Your Task Manager</h1>
-      <p class="text-gray-600">
-        Stay organized and boost your productivity with this simple task management app.
-      </p>
-    </div>
+  <div class="max-w-3xl mx-auto p-4">
+    <h1 class="text-xl font-bold mb-4">Task Manager</h1>
+    <p class="mb-6">A simple app to manage your tasks</p>
 
     <TaskForm @add-task="addNewTask" />
-
     <TaskList :tasks="tasks" @update-task="updateTask" @delete-task="deleteTask" />
   </div>
 </template>
@@ -49,35 +44,30 @@ watch(
 onMounted(() => {
   if (tasks.value.length === 0) {
     const now = new Date()
-    const tomorrow = new Date()
-    tomorrow.setDate(now.getDate() + 1)
 
     tasks.value = [
       {
         id: 1,
-        title: 'Learn Vue 3 Composition API',
-        description: 'Study the script setup syntax and reactivity system',
+        title: 'Learn Vue 3',
+        description: 'Study the basics',
         completed: false,
         priority: 'high',
-        dueDate: tomorrow.toISOString().split('T')[0],
         createdAt: now.toISOString(),
       },
       {
         id: 2,
-        title: 'Build a task manager app',
-        description: 'Create a simple task manager to practice Vue concepts',
+        title: 'Build a task app',
+        description: 'Create a simple app',
         completed: false,
         priority: 'normal',
-        dueDate: null,
         createdAt: now.toISOString(),
       },
       {
         id: 3,
-        title: 'Master Tailwind CSS',
-        description: 'Learn utility-first CSS framework for rapid UI development',
+        title: 'Learn Tailwind',
+        description: 'Study CSS framework',
         completed: true,
         priority: 'normal',
-        dueDate: null,
         createdAt: now.toISOString(),
       },
     ]

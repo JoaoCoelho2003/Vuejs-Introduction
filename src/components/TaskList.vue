@@ -1,42 +1,50 @@
 <template>
-  <div class="bg-white rounded shadow p-6">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-xl font-bold text-gray-800">My Tasks</h2>
-      <TaskFilter v-model="activeFilter" :counts="filterCounts" />
+  <div class="bg-white p-4 border rounded">
+    <h2 class="font-bold mb-4">My Tasks</h2>
+
+    <div class="mb-4">
+      <button
+        @click="filter = 'all'"
+        class="mr-2 p-1"
+        :class="filter === 'all' ? 'bg-green-400 rounded-xl px-4' : ''"
+      >
+        All ({{ tasks.length }})
+      </button>
+      <button
+        @click="filter = 'active'"
+        class="mr-2 p-1"
+        :class="filter === 'active' ? 'bg-green-400 rounded-xl px-4' : ''"
+      >
+        Active ({{ activeTasks.length }})
+      </button>
+      <button
+        @click="filter = 'completed'"
+        class="p-1"
+        :class="filter === 'completed' ? 'bg-green-400 rounded-xl px-4' : ''"
+      >
+        Completed ({{ completedTasks.length }})
+      </button>
     </div>
 
-    <div v-if="filteredTasks.length === 0" class="py-8 text-center text-gray-500">
-      <XSquare class="h-12 w-12 mx-auto mb-3 text-gray-300" />
+    <div v-if="filteredTasks.length === 0" class="text-center p-4">
       <p>No tasks to display</p>
-      <p class="text-sm mt-1">
-        {{
-          activeFilter === 'all'
-            ? 'Add a new task to get started!'
-            : `No ${activeFilter} tasks found.`
-        }}
-      </p>
     </div>
 
-    <TransitionGroup name="list" tag="div" class="space-y-3">
+    <div v-else>
       <TaskItem
         v-for="task in filteredTasks"
         :key="task.id"
         :task="task"
-        @update-task="updateTask"
-        @delete-task="deleteTask"
+        @update-task="$emit('update-task', $event)"
+        @delete-task="$emit('delete-task', $event)"
       />
-    </TransitionGroup>
-
-    <TaskStats v-if="tasks.length > 0" :tasks="tasks" class="mt-6" />
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { XSquare } from 'lucide-vue-next'
 import TaskItem from './TaskItem.vue'
-import TaskFilter from './TaskFilter.vue'
-import TaskStats from './TaskStats.vue'
 
 const props = defineProps({
   tasks: {
@@ -45,49 +53,21 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update-task', 'delete-task'])
+defineEmits(['update-task', 'delete-task'])
 
-const activeFilter = ref('all')
+const filter = ref('all')
+
+const activeTasks = computed(() => {
+  return props.tasks.filter((task) => !task.completed)
+})
+
+const completedTasks = computed(() => {
+  return props.tasks.filter((task) => task.completed)
+})
 
 const filteredTasks = computed(() => {
-  switch (activeFilter.value) {
-    case 'active':
-      return props.tasks.filter((task) => !task.completed)
-    case 'completed':
-      return props.tasks.filter((task) => task.completed)
-    default:
-      return props.tasks
-  }
+  if (filter.value === 'active') return activeTasks.value
+  if (filter.value === 'completed') return completedTasks.value
+  return props.tasks
 })
-
-const filterCounts = computed(() => {
-  return {
-    all: props.tasks.length,
-    active: props.tasks.filter((task) => !task.completed).length,
-    completed: props.tasks.filter((task) => task.completed).length,
-  }
-})
-
-const updateTask = (updatedTask) => {
-  emit('update-task', updatedTask)
-}
-
-const deleteTask = (taskId) => {
-  emit('delete-task', taskId)
-}
 </script>
-
-<style>
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.4s ease;
-}
-.list-enter-from {
-  opacity: 0;
-  transform: translateX(30px);
-}
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(-30px);
-}
-</style>
